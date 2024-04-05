@@ -1,96 +1,122 @@
-import 'dart:math';
+import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:google_api_headers/google_api_headers.dart';
-import 'package:google_maps_webservice/places.dart';
-// import 'package:google_maps_webservice/places.dart' as places;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart';
 
-final searchScaffoldKey = GlobalKey<ScaffoldState>();
+const googleApiKey = 'AIzaSyAPLck2dUtBZF4mTjpq1AzXC-hHy57lwDI';
 
+class SearchScreen extends StatefulWidget {
+  final LatLng? initialLocation;
 
-Future<void> displayPrediction(Prediction p, ScaffoldState scaffold) async {
-  // get detail (lat/lng)
-  GoogleMapsPlaces places = GoogleMapsPlaces(
-    apiKey: 'AIzaSyB5qedkzpzE5AY7BcUVbiLTsMkOKQO2Ohs',
-    apiHeaders: await const GoogleApiHeaders().getHeaders(),
-  );
-  PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
-  final lat = detail.result.geometry!.location.lat;
-  final lng = detail.result.geometry!.location.lng;
-
-  // scaffold.showSnackBar(
-  //   SnackBar(content: Text("${p.description} - $lat/$lng")),
-  // );
-}
-
-class CustomSearchScaffold extends PlacesAutocompleteWidget {
-  CustomSearchScaffold({super.key})
-      : super(
-          apiKey: 'AIzaSyB5qedkzpzE5AY7BcUVbiLTsMkOKQO2Ohs',
-          sessionToken: Uuid().generateV4(),
-          language: "en",
-          components: [Component(Component.country, "uk")],
-        );
+  const SearchScreen({Key? key, this.initialLocation}) : super(key: key);
 
   @override
-  _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _CustomSearchScaffoldState extends PlacesAutocompleteState {
+class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController _controller = TextEditingController();
+  Timer? _debounce;
+
+  // Save all the places in a list
+  final List<Map<String, dynamic>> places = [];
+
+  void loadData() async {
+    final response = await post(
+      Uri.parse('https://places.googleapis.com/v1/places:searchText'),
+      headers: {
+        'X-Goog-Api-Key': googleApiKey,
+        'X-Goog-FieldMask':
+            'places.displayName,places.location,places.formattedAddress',
+        if (widget.initialLocation != null)
+          'locationBias': json.encode(
+            {
+              'circle': {
+                'center': {
+                  'latitude': widget.initialLocation!.latitude,
+                  'longitude': widget.initialLocation!.longitude,
+                },
+                'radius': 50000,
+              },
+            },
+          ),
+      },
+      body: {
+        'textQuery': _controller.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final placesData = data['places'];
+
+      final List<Map<String, dynamic>> _places = [];
+
+      for (var place in placesData) {
+        _places.add({
+          'formattedAddress': place['formattedAddress'],
+          'location': place['location'],
+          'displayName': place['displayName']['text']
+        });
+      }
+
+      setState(() {
+        places.clear();
+        places.addAll(_places);
+      });
+    }
+  }
+
+  void _onTextChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (value.length > 2) {
+        loadData();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(title: AppBarPlacesAutoCompleteTextField());
-    final body = PlacesAutocompleteResult(
-      onTap: (p) {
-        displayPrediction(p, searchScaffoldKey.currentState!);
-      },
-      logo: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [FlutterLogo()],
+    return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          controller: _controller,
+          onChanged: _onTextChanged,
+          decoration: const InputDecoration(
+            hintText: 'Search for a place...',
+          ),
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: places.length,
+        itemBuilder: (context, index) {
+          final place = places[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              title: Text(place['displayName']),
+              subtitle: Text(place['formattedAddress']),
+              onTap: () {
+                Navigator.of(context).pop(LatLng(
+                  place['location']['latitude'],
+                  place['location']['longitude'],
+                ));
+              },
+            ),
+          );
+        },
       ),
     );
-    return Scaffold(key: searchScaffoldKey, appBar: appBar, body: body);
   }
-
-  @override
-  void onResponseError(PlacesAutocompleteResponse response) {
-    super.onResponseError(response);
-    // searchScaffoldKey.currentState.showSnackBar(
-    //   SnackBar(content: Text(response.errorMessage)),
-    // );
-  }
-
-  // @override
-  // void onResponse(PlacesAutocompleteResponse response) {
-  //   super.onResponse(response);
-  //   if (response != null && response.predictions.isNotEmpty) {
-  //     // searchScaffoldKey.currentState.showSnackBar(
-  //     //   SnackBar(content: Text("Got answer")),
-  //     // );
-  //   }
-  // }
-}
-
-class Uuid {
-  final Random _random = Random();
-
-  String generateV4() {
-    // Generate xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx / 8-4-4-4-12.
-    final int special = 8 + _random.nextInt(4);
-
-    return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
-        '${_bitsDigits(16, 4)}-'
-        '4${_bitsDigits(12, 3)}-'
-        '${_printDigits(special, 1)}${_bitsDigits(12, 3)}-'
-        '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
-  }
-
-  String _bitsDigits(int bitCount, int digitCount) =>
-      _printDigits(_generateBits(bitCount), digitCount);
-
-  int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
-
-  String _printDigits(int value, int count) =>
-      value.toRadixString(16).padLeft(count, '0');
 }
