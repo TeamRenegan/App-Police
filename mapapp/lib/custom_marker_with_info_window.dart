@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:custom_info_window/custom_info_window.dart';
@@ -5,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:mapapp/camera_details.dart';
+import 'package:mapapp/open_custom_marker.dart';
 
 import 'search.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
+
 
 const googleApiKey = 'AIzaSyAPLck2dUtBZF4mTjpq1AzXC-hHy57lwDI';
 
@@ -36,6 +40,7 @@ class _CustomMarkerInfoWindowScreenState
   // ];
   final double _zoom = 15.0;
   final Set<Marker> _markers = {};
+  final Set<Polygon> _polygons = <Polygon>{};
 
   late LatLng _currentLocation;
 
@@ -69,7 +74,6 @@ class _CustomMarkerInfoWindowScreenState
     loadData();
   }
 
-
   void _requestLocationPermission() async {
     PermissionStatus status = await Permission.location.request();
 
@@ -85,7 +89,7 @@ class _CustomMarkerInfoWindowScreenState
 
   //     _markers.add(Marker(
   //         markerId: MarkerId(i.toString()),
-  //         position: _latLang[i],
+  //         position: position,
   //         icon: BitmapDescriptor.fromBytes(markerIcon),
   //         onTap: () {
   //           _customInfoWindowController.addInfoWindow!(
@@ -157,7 +161,7 @@ class _CustomMarkerInfoWindowScreenState
   //                 ),
   //               ),
   //             ),
-  //             _latLang[i],
+  //             position,
   //           );
   //         }));
 
@@ -209,81 +213,157 @@ class _CustomMarkerInfoWindowScreenState
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const NewPage()),
+                      MaterialPageRoute(builder: (context) => const CameraDetails()),
                     );
                   },
-                  child: Container(
-                    width: 300,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          height: 100,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    'https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg?cs=srgb&dl=pexels-narda-yescas-1566837.jpg&fm=jpg'),
-                                fit: BoxFit.fitWidth,
-                                filterQuality: FilterQuality.high),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                            color: Colors.red,
-                          ),
-                        ),
-                        const Padding(
-                          padding:
-                              EdgeInsets.only(top: 10, left: 10, right: 10),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                child: Text(
-                                  'Beef Tacos',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.fade,
-                                  softWrap: false,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                '.3 mi.',
-                                style: TextStyle(color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                        const Padding(
-                          padding:
-                              EdgeInsets.only(top: 10, left: 10, right: 10),
-                          child: Text(
-                            'Help me finish these tacos! I got a platter from Costco and it’s too much.',
-                            maxLines: 2,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // child: Container(
+                  //   width: 300,
+                  //   height: 200,
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     border: Border.all(color: Colors.grey),
+                  //     borderRadius: BorderRadius.circular(10.0),
+                  //   ),
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Container(
+                  //         width: 300,
+                  //         height: 100,
+                  //         decoration: const BoxDecoration(
+                  //           image: DecorationImage(
+                  //               image: NetworkImage(
+                  //                   'https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg?cs=srgb&dl=pexels-narda-yescas-1566837.jpg&fm=jpg'),
+                  //               fit: BoxFit.fitWidth,
+                  //               filterQuality: FilterQuality.high),
+                  //           borderRadius: BorderRadius.all(
+                  //             Radius.circular(10.0),
+                  //           ),
+                  //           color: Colors.red,
+                  //         ),
+                  //       ),
+                  //       const Padding(
+                  //         padding:
+                  //             EdgeInsets.only(top: 10, left: 10, right: 10),
+                  //         child: Row(
+                  //           children: [
+                  //             SizedBox(
+                  //               width: 100,
+                  //               child: Text(
+                  //                 'Beef Tacos',
+                  //                 maxLines: 1,
+                  //                 overflow: TextOverflow.fade,
+                  //                 softWrap: false,
+                  //                 style: TextStyle(color: Colors.black),
+                  //               ),
+                  //             ),
+                  //             Spacer(),
+                  //             Text(
+                  //               '.3 mi.',
+                  //               style: TextStyle(color: Colors.black),
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       const Padding(
+                  //         padding:
+                  //             EdgeInsets.only(top: 10, left: 10, right: 10),
+                  //         child: Text(
+                  //           'Help me finish these tacos! I got a platter from Costco and it’s too much.',
+                  //           maxLines: 2,
+                  //           style: TextStyle(color: Colors.black),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                  child: OpenedContainer(
+                      location: position,
+                      title: camera['ownerName'],
+                      miniTitle: camera['cameraModel'],
+                      subTitle: camera['address']),
                 ),
                 position,
               );
             }));
+
+        Map<String, double> camDirToAngle = {
+          'North': 90,
+          'East': 0,
+          'South': 270,
+          'West': 180,
+          'North-East': 45,
+          'South-East': 315,
+          'South-West': 225,
+          'North-West': 135
+        };
+
+        double angle = camDirToAngle[camera['cameraDirection']]!;
+        _polygons.add(Polygon(
+          polygonId: PolygonId(camera['_id']),
+          fillColor: Colors.blue.withOpacity(0.2),
+          strokeColor: Colors.blue,
+          strokeWidth: 0,
+          points: [
+            position,
+            calculateNewLatLng(position, angle - 45 / 2, 0.1),
+            calculateNewLatLng(position, angle - 45 / 3, 0.1),
+            calculateNewLatLng(position, angle - 45 / 4, 0.1),
+            calculateNewLatLng(position, angle - 45 / 5, 0.1),
+            calculateNewLatLng(position, angle - 45 / 6, 0.1),
+            calculateNewLatLng(position, angle - 45 / 7, 0.1),
+            calculateNewLatLng(position, angle - 45 / 8, 0.1),
+            calculateNewLatLng(position, angle - 45 / 9, 0.1),
+            calculateNewLatLng(position, angle, 0.1),
+            calculateNewLatLng(position, angle + 45 / 9, 0.1),
+            calculateNewLatLng(position, angle + 45 / 8, 0.1),
+            calculateNewLatLng(position, angle + 45 / 7, 0.1),
+            calculateNewLatLng(position, angle + 45 / 6, 0.1),
+            calculateNewLatLng(position, angle + 45 / 5, 0.1),
+            calculateNewLatLng(position, angle + 45 / 4, 0.1),
+            calculateNewLatLng(position, angle + 45 / 3, 0.1),
+            calculateNewLatLng(position, angle + 45 / 2, 0.1),
+          ].map((e) => decrementToAdjust(e)).toList(),
+        ));
 
         setState(() {});
       }
     } else {
       throw Exception('Failed to load cameras');
     }
+  }
+
+  LatLng decrementToAdjust(LatLng latLng) {
+    return LatLng(latLng.latitude - 0.000015, latLng.longitude + 0.00001);
+  }
+
+  LatLng calculateNewLatLng(LatLng startPoint, double angle, double distance) {
+    // Radius of the Earth in kilometers
+    const double earthRadius = 6371.0;
+
+    // Convert distance from kilometers to radians
+    final double distanceRadians = (distance / 8) / earthRadius;
+
+    // Convert angles from degrees to radians
+    final double startLatRadians = startPoint.latitude * pi / 180.0;
+    final double startLngRadians = startPoint.longitude * pi / 180.0;
+    final double angleRadians = angle * pi / 180.0;
+
+    // Calculate new latitude and longitude
+    final double newLatRadians = asin(
+        sin(startLatRadians) * cos(distanceRadians) +
+            cos(startLatRadians) * sin(distanceRadians) * cos(angleRadians));
+    final double newLngRadians = startLngRadians +
+        atan2(sin(angleRadians) * sin(distanceRadians) * cos(startLatRadians),
+            cos(distanceRadians) - sin(startLatRadians) * sin(newLatRadians));
+
+    // Convert back to degrees
+    final double newLatitude = newLatRadians * 180.0 / pi;
+    final double newLongitude = newLngRadians * 180.0 / pi;
+
+    return LatLng(newLatitude, newLongitude);
   }
 
   @override
@@ -342,6 +422,7 @@ class _CustomMarkerInfoWindowScreenState
             ),
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
+            polygons: _polygons,
           ),
           CustomInfoWindow(
             controller: _customInfoWindowController,
@@ -355,18 +436,5 @@ class _CustomMarkerInfoWindowScreenState
   }
 }
 
-class NewPage extends StatelessWidget {
-  const NewPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('New Page'),
-      ),
-      body: const Center(
-        child: Text('This is a new page!'),
-      ),
-    );
-  }
-}
+
