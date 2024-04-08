@@ -44,7 +44,7 @@ class PostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -206,7 +206,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   child: Text(
                     image == null ? 'Pick Image' : 'Image Picked',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white), // Set text color to white
                   ),
                 ),

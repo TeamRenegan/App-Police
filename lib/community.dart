@@ -22,7 +22,7 @@ class Post {
     return Post(
       title: json['title'] ?? 'Default Title',
       description: json['description'] ?? 'Default Description',
-      imageUrl: json['imageUrl'] ?? 'https://via.placeholder.com/150',
+      imageUrl: json['image'] ?? 'https://via.placeholder.com/150',
       authorName: json['name'] ?? 'Hritika',
       postDate: json['date'] ?? '05-04-2024',
     );
@@ -85,84 +85,81 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Feed'),
-          backgroundColor: Colors.blue,
-        ),
-        body: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            return Card(
-              elevation: 5,
-              margin: EdgeInsets.all(10),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      posts[index].title,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Feed'),
+        backgroundColor: Colors.blue,
+      ),
+      body: ListView.builder(
+        itemCount: posts.length,
+        itemBuilder: (context, index) {
+          return Card(
+            elevation: 5,
+            margin: const EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    posts[index].title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      posts[index].description,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    posts[index].description,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
                     ),
-                    SizedBox(height: 5),
-                    Image.network(
-                      posts[index].imageUrl,
-                      height: 150,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Author: ${posts[index].authorName}',
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
+                  ),
+                  const SizedBox(height: 5),
+                  Image.network(
+                    posts[index].imageUrl,
+                    height: 150,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Author: ${posts[index].authorName}',
+                        style: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Text(
-                          '${posts[index].postDate}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      ),
+                      Text(
+                        '${posts[index].postDate}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CreatePostPage()),
-            );
-          },
-          backgroundColor: Colors.blue,
-          child: const Icon(Icons.create),
-        ),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreatePostPage()),
+          );
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.create),
       ),
     );
   }

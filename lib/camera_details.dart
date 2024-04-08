@@ -63,7 +63,7 @@ class _CameraDetailsState extends State<CameraDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Camera Details", // Removed const keyword for styling
           style: TextStyle(
             fontSize: 20.0, // Increased font size
@@ -96,42 +96,42 @@ class _CameraDetailsState extends State<CameraDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Owner Name:",
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 5.0),
                       Text(ownerName, style: const TextStyle(fontSize: 16.0)),
                       const Divider(),
-                      Text(
+                      const Text(
                         "Contact Number:",
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 5.0),
                       Text(contactNumber,
                           style: const TextStyle(fontSize: 16.0)),
                       const Divider(),
-                      Text(
+                      const Text(
                         "Email:",
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 5.0),
                       Text(email, style: const TextStyle(fontSize: 16.0)),
                       const Divider(),
-                      Text(
+                      const Text(
                         "Address:",
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 5.0),
                       Text(address, style: const TextStyle(fontSize: 16.0)),
                       const Divider(),
-                      Text(
+                      const Text(
                         "Model Name:",
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 5.0),
@@ -150,7 +150,7 @@ class _CameraDetailsState extends State<CameraDetails> {
                     MaterialPageRoute(
                       builder: (context) => const LiveStreamPage(
                         urlToFetchStreamUrl:
-                            'https://ankit-s3-1.s3.ap-south-1.amazonaws.com/crime_scenes/crime_scene_20240117_165530.mp4',
+                            'https://ankit-s3-1.s3.ap-south-1.amazonaws.com/crime_scenes/live_stream.mp4',
                       ),
                     ),
                   ),
@@ -169,7 +169,7 @@ class _CameraDetailsState extends State<CameraDetails> {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HistoryRecordings(),
+                      builder: (context) => const HistoryRecordings(),
                     ),
                   ),
                   child: const Text("Alerts"),

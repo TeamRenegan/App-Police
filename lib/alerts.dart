@@ -63,7 +63,7 @@ class _HistoryRecordingsState extends State<HistoryRecordings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Alerts'),
+        title: const Text('Alerts'),
       ),
       body: _videoUrls.isNotEmpty
           ? SingleChildScrollView(
@@ -79,8 +79,8 @@ class _HistoryRecordingsState extends State<HistoryRecordings> {
                 ),
               ),
             )
-          : Center(
-              child: const Text('No videos available'),
+          : const Center(
+              child: Text('No videos available'),
             ),
     );
   }
@@ -120,7 +120,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return VideoPlayer(_controller);
               } else {
-                return Center(child: const CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             },
           ),
@@ -149,15 +149,15 @@ class VideoPlayerControls extends StatelessWidget {
       child: Stack(
         children: [
           AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
-            reverseDuration: Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
+            reverseDuration: const Duration(milliseconds: 200),
             child: controller.value.isPlaying
-                ? SizedBox.shrink()
+                ? const SizedBox.shrink()
                 : Container(
                     color: Colors.black26,
                     child: Center(
                       child: IconButton(
-                        icon: Icon(Icons.play_arrow),
+                        icon: const Icon(Icons.play_arrow),
                         color: Colors.white,
                         onPressed: () {
                           if (!controller.value.isInitialized) {
