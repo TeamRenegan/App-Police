@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-// ignore: depend_on_referenced_packages
 import 'package:http/http.dart';
 
-const googleApiKey = 'AIzaSyAPLck2dUtBZF4mTjpq1AzXC-hHy57lwDI';
+const googleApiKey = 'YOUR API KEY';
 
 class SearchScreen extends StatefulWidget {
   final LatLng? initialLocation;

@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 
 class LiveStreamPage extends StatefulWidget {
-  final String urlToFetchStreamUrl; // URL to get the actual stream URL
+  final String urlToFetchStreamUrl; 
 
   const LiveStreamPage({super.key, required this.urlToFetchStreamUrl});
 
@@ -20,7 +17,6 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
   @override
   void initState() {
     super.initState();
-    // _fetchLiveStreamUrl();
     _initializeVideoPlayer();
   }
 

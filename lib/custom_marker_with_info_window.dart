@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:ui' as ui;
-
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +8,6 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:mapapp/camera_details.dart';
 import 'package:mapapp/community.dart';
 import 'package:mapapp/open_custom_marker.dart';
-
 import 'search.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;

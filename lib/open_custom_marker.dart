@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 
-const googleApiKey = 'AIzaSyAPLck2dUtBZF4mTjpq1AzXC-hHy57lwDI';
+const googleApiKey = 'YOUR GOOGLE API KEY'; // ENTER YOUR GOOGLE API KEY
 
 class OpenedContainer extends StatefulWidget {
   final String title;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mapapp/live_stream.dart';
@@ -21,18 +20,18 @@ class _CameraDetailsState extends State<CameraDetails> {
   String email = "";
   String address = "";
   String modelName = "";
-  bool isLoading = false; // Flag for loading state
-  String errorMessage = ""; // Store any error message
+  bool isLoading = false;
+  String errorMessage = "";
 
   // Define default data
-  final String defaultOwnerName = "Gopi Bahu";
-  final String defaultContactNumber = "9876543210";
-  final String defaultEmail = "Gopibahu@sasubai.com";
-  final String defaultAddress = "Wherever you are is the place I belong";
-  final String defaultModelName = "pict cctvs";
+  final String defaultOwnerName = "Rahul Deshmukh";
+  final String defaultContactNumber = "9988776655";
+  final String defaultEmail = "rahul.deshmukh@example.com";
+  final String defaultAddress = "123, ABC Colony, Pune";
+  final String defaultModelName = "Pune Security Solutions";
 
   Future<void> fetchCameraDetails() async {
-    // Replace with your actual API endpoint
+    // API endpoint
     final response = await http.get(Uri.parse(
         "https://renegan-inc-backend.onrender.com/cameras/details/${widget.camId}"));
     if (response.statusCode == 200) {
@@ -64,11 +63,11 @@ class _CameraDetailsState extends State<CameraDetails> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Camera Details", // Removed const keyword for styling
+          "Camera Details",
           style: TextStyle(
-            fontSize: 20.0, // Increased font size
-            fontWeight: FontWeight.bold, // Made text bold
-            color: Colors.white, // White text for better contrast
+            fontSize: 20.0, 
+            fontWeight: FontWeight.bold,
+            color: Colors.white, 
           ),
         ),
         backgroundColor: Colors.blue,
@@ -140,7 +139,7 @@ class _CameraDetailsState extends State<CameraDetails> {
                   ),
                 ),
               ),
-            const SizedBox(height: 40.0), // Added spacing for visual appeal
+            const SizedBox(height: 40.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -164,8 +163,6 @@ class _CameraDetailsState extends State<CameraDetails> {
                   ),
                 ),
                 ElevatedButton(
-                  // onPressed: () =>
-                  //     Navigator.pushNamed(context, "HistoryRecordings"),
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(

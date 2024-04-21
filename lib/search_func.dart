@@ -16,7 +16,7 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
   Future<void> _handlePressButton() async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
-      apiKey: 'AIzaSyB5qedkzpzE5AY7BcUVbiLTsMkOKQO2Ohs',
+      apiKey: 'YOUR API KEY',
       mode: Mode.overlay,
       language: "en",
       components: [Component(Component.country, "us")],
@@ -24,7 +24,7 @@ class _SearchMapScreenState extends State<SearchMapScreen> {
 
     if (p != null) {
       GoogleMapsPlaces places =
-          GoogleMapsPlaces(apiKey: 'AIzaSyB5qedkzpzE5AY7BcUVbiLTsMkOKQO2Ohs');
+          GoogleMapsPlaces(apiKey: 'YOUR API KEY');
       PlacesDetailsResponse detail =
           await places.getDetailsByPlaceId(p.placeId!);
       double lat = detail.result.geometry!.location.lat;
