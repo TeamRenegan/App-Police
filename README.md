@@ -1,16 +1,24 @@
-# mapapp
+# Police App
 
-A new Flutter project.
+This is a Flutter app for law enforcement officers and civilians, providing features for surveillance and community engagement.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- **Map View**: View a map with markers indicating camera locations.
+- **Camera Details**: Click on a marker to view details about the camera, including owner information, live stream, and alerts.
+- **Community Section**: Officers and civilians can post incidents in the community section, and notifications will be sent to community members.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Usage
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To use the app, follow these steps:
+
+1. [Download](#) or clone the repository.
+2. Install dependencies (`flutter pub get`).
+3. Run the app (`flutter run`).
+
+## Technologies Used
+
+- [Flutter](https://flutter.dev/)
+- [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter)
+
