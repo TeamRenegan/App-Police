@@ -13,7 +13,7 @@ This is a Flutter app for law enforcement officers and civilians, providing feat
 
 To use the app, follow these steps:
 
-1. [Download](#) or clone the repository.
+1. Clone the repository.
 2. Install dependencies (`flutter pub get`).
 3. Run the app (`flutter run`).
 
